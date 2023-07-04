@@ -28,7 +28,7 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 
 ## Change the template
 - fill out the env file with your configurations
-- change the socket.io connection point from the client.js
+- change the socket.io connection point from the clientVoice.js
 
 ## Running the project
 
