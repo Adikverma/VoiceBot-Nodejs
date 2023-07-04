@@ -33,8 +33,10 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 
     $ npm start
 
-## Open on the http://localhost/8000 url
+## Open on the client side
 - #### Open Chrome Browser
+- paste link http://localhost/8000 to load the client side page
+- look if the connection is successful
 - press 'Talk' to give prompt to the backend through speech
 - wait for the response to show up
 - press 'Restart' to clear the responses
