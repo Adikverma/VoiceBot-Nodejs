@@ -7,7 +7,8 @@ Here's a live demo of the project : https://voicebot-adi.onrender.com/
 ---
 ## Requirements
 
-For development, you will only need Node.js and a node global package, Yarn, installed in your environement.
+For development, you will only need Node.js and a node global package, npm, installed in your environement.
+Chrome Browser is preffered.
 
 ### Node
 - #### Node installation on Windows
@@ -22,7 +23,7 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 ## Install
 
     $ git clone https://github.com/YOUR_USERNAME/PROJECT_TITLE
-    $ cd PROJECT_TITL
+    $ cd PROJECT_TITLE
     $ npm install
 
 ## Change the template
