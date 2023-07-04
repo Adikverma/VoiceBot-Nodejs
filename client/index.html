@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>VoiceBot.adi</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <script
+      src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+      integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <div style="margin: 20px">
+      <h1 style="font-size: 26px">VoiceBot.adi</h1>
+      <div>
+        <button
+          id="talk"
+          style="font-size: 18px; width: 50px; height: 30px"
+          disabled
+        >
+          Talk
+        </button>
+        <button id="restart" style="font-size: 18px; width: 80px; height: 30px">
+          Restart
+        </button>
+      </div>
+      <br />
+      <h2 style="font-size: 16px">Prompt Detected:</h2>
+      <textarea id="request" style="width: 800px; height: 100px">
+Connecting...</textarea
+      >
+      <br />
+      <h2 style="font-size: 16px">Brief Response</h2>
+      <textarea id="response" style="width: 800px; height: 300px">
+Connecting...</textarea
+      >
+    </div>
+    <h6>*Preffer Chrome</h6>
+  </body>
+  <script src="/clientVoice.js"></script>
+</html>
