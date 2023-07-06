@@ -5,8 +5,19 @@ const responsePreview = document.getElementById("response");
 responsePreview.disabled = true;
 requestPreview.disabled = true;
 
+//webkit models
+//stt
+const SpeechRecognition = window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+let content = "";
+
+//tts
+let speech = new SpeechSynthesisUtterance();
+speech.lang = "en";
+let voices = [];
+
 //Setting up socket.io connection to server
-const socketio = io.connect("http://Your-Hosted-Domain");
+const socketio = io.connect("http://connection-domain");
 socketio.on("connected", function (data) {
   if (data.connected) {
     talk.disabled = false;
@@ -23,10 +34,6 @@ socketio.on("connect_error", (err) => {
 });
 
 //handeling the speech recognition
-const SpeechRecognition = window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
-
-let content = "";
 
 recognition.onstart = function () {
   requestPreview.innerHTML = "Listening...";
@@ -39,6 +46,7 @@ recognition.onend = () => {
 
 recognition.onerror = function () {
   socketio.emit("summary-response", "an error occured");
+  // socketio.emit("summary-brief", "an error occured");
 };
 
 recognition.onresult = function (event) {
@@ -64,10 +72,11 @@ talk.onclick = (event) => {
 };
 
 socketio.on("summary-response", function (data) {
-  if (data) {
-    speakResponse(data);
-  }
   responsePreview.innerHTML = data;
+  speech.text = data;
+  if (data) {
+    window.speechSynthesis.speak(speech);
+  }
 });
 
 // Getting response from server
@@ -79,18 +88,63 @@ socketio.on("brief-response", function (data) {
 });
 
 //handeling the speech synthesis
-const synth = window.speechSynthesis;
-const speakResponse = function (text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  speechSynthesis.speak(utterance);
+
+window.speechSynthesis.onvoiceschanged = () => {
+  voices = window.speechSynthesis.getVoices();
+  speech.voice = voices[0];
+
+  let voiceSelect = document.querySelector("#voices");
+  voices.forEach(
+    (voice, i) => (voiceSelect.options[i] = new Option(voice.name, i))
+  );
 };
+
+document.querySelector("#rate").addEventListener("input", () => {
+  const rate = document.querySelector("#rate").value;
+  speech.rate = rate;
+
+  document.querySelector("#rate-label").innerHTML = rate;
+});
+
+document.querySelector("#volume").addEventListener("input", () => {
+  const volume = document.querySelector("#volume").value;
+  speech.volume = volume;
+
+  document.querySelector("#volume-label").innerHTML = volume;
+});
+
+document.querySelector("#pitch").addEventListener("input", () => {
+  const pitch = document.querySelector("#pitch").value;
+  speech.pitch = pitch;
+
+  document.querySelector("#pitch-label").innerHTML = pitch;
+});
+
+document.querySelector("#voices").addEventListener("change", () => {
+  speech.voice = voices[document.querySelector("#voices").value];
+});
+
+document.querySelector("#pause").addEventListener("click", () => {
+  window.speechSynthesis.pause();
+});
+
+document.querySelector("#resume").addEventListener("click", () => {
+  window.speechSynthesis.resume();
+});
+
+document.querySelector("#start").addEventListener("click", () => {
+  window.speechSynthesis.cancel();
+
+  speech.text = responsePreview.innerHTML;
+
+  window.speechSynthesis.speak(speech);
+});
 
 //restart button click
 restart.onclick = () => {
   requestPreview.innerHTML = "Press Talk to start...";
   responsePreview.innerHTML = "";
   talk.disabled = false;
-  recognition.abort();
-  speechSynthesis.pause();
-  socketio.emit("stop", {});
+  window.speechSynthesis.cancel();
+  socketio.emit("stop", false);
 };

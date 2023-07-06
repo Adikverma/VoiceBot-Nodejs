@@ -6,6 +6,11 @@
     <title>VoiceBot.adi</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <script
       src="https://cdn.socket.io/4.6.0/socket.io.min.js"
       integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
@@ -13,33 +18,110 @@
     ></script>
   </head>
 
-  <body>
-    <div style="margin: 20px">
-      <h1 style="font-size: 26px">VoiceBot.adi</h1>
-      <div>
-        <button
-          id="talk"
-          style="font-size: 18px; width: 50px; height: 30px"
-          disabled
-        >
-          Talk
-        </button>
-        <button id="restart" style="font-size: 18px; width: 80px; height: 30px">
-          Restart
-        </button>
+  <body class="mt-2 bg-light">
+    <div class="container-fluid">
+      <div class="mb-3">
+        <h1 class="display-4">VoiceBot.adi</h1>
       </div>
-      <br />
-      <h2 style="font-size: 16px">Prompt Detected:</h2>
-      <textarea id="request" style="width: 800px; height: 100px">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 style="font-size: 18px">Prompt Detected:</h2>
+          <textarea id="request" style="width: 100%; height: 200px">
 Connecting...</textarea
-      >
-      <br />
-      <h2 style="font-size: 16px">Brief Response</h2>
-      <textarea id="response" style="width: 800px; height: 300px">
+          >
+          <div class="mx-auto p-3">
+            <button
+              id="talk"
+              class="btn btn-outline-dark btn-lg mb-2"
+              style="font-size: 26px; width: 100%"
+              disabled
+            >
+              Talk
+            </button>
+            <button
+              id="restart"
+              class="btn btn-outline-dark btn-lg"
+              style="font-size: 26px; width: 100%"
+            >
+              Restart
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h2 style="font-size: 18px">Response:</h2>
+          <textarea id="response" style="width: 100%; height: 200px">
 Connecting...</textarea
-      >
+          >
+          <div>
+            <!-- Control Buttons -->
+            <div class="col">
+              <button id="pause" class="btn btn-warning mt-1 me-3">
+                Pause
+              </button>
+              <button id="resume" class="btn btn-success mt-1 me-3">
+                Resume
+              </button>
+              <button id="start" class="btn btn-danger mt-1 me-3">start</button>
+            </div>
+
+            <!-- Select Voice -->
+            <p class="lead mt-4">Select Voice</p>
+            <select
+              id="voices"
+              class="form-select"
+              style="max-width: 100%"
+            ></select>
+
+            <div class="row mr-1 mb-3">
+              <!-- Range Slliders for Volume, Rate & Pitch -->
+              <div class="d-flex mt-3">
+                <div class="col-4">
+                  <p class="lead">Volume</p>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    value="1"
+                    step="0.1"
+                    id="volume"
+                  />
+                  <br />
+                  <span id="volume-label" class="ms-5">1</span>
+                </div>
+
+                <div class="col-4">
+                  <p class="lead">Rate</p>
+                  <input
+                    type="range"
+                    min="0.1"
+                    max="10"
+                    value="1.35"
+                    id="rate"
+                    step="0.1"
+                  />
+                  <br />
+                  <span id="rate-label" class="ms-5">1.35</span>
+                </div>
+
+                <div class="col-4">
+                  <p class="lead">Pitch</p>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    value="1"
+                    step="0.1"
+                    id="pitch"
+                  />
+                  <br />
+                  <span id="pitch-label" class="ms-5">1</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <h6>*Preffer Chrome</h6>
   </body>
   <script src="/clientVoice.js"></script>
 </html>
