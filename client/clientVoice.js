@@ -17,7 +17,7 @@ speech.lang = "en";
 let voices = [];
 
 //Setting up socket.io connection to server
-const socketio = io.connect("http://connection-domain");
+const socketio = io.connect("/");
 socketio.on("connected", function (data) {
   if (data.connected) {
     talk.disabled = false;
@@ -40,13 +40,20 @@ recognition.onstart = function () {
 };
 
 recognition.onend = () => {
-  socketio.emit("request", content);
-  responsePreview.innerHTML = "Requesting...";
+  if (!content) {
+    requestPreview.innerHTML = "No Speech Detected";
+  } else {
+    socketio.emit("request", content);
+    responsePreview.innerHTML = "Requesting...";
+    setTimeout(() => {
+      if (responsePreview.textContent == "Requesting...")
+        responsePreview.textContent = "Timeout";
+    }, 5000);
+  }
 };
 
 recognition.onerror = function () {
   socketio.emit("summary-response", "an error occured");
-  // socketio.emit("summary-brief", "an error occured");
 };
 
 recognition.onresult = function (event) {
@@ -59,7 +66,7 @@ recognition.onresult = function (event) {
   requestPreview.innerHTML = content;
 };
 
-talk.onclick = (event) => {
+talk.onclick = () => {
   talk.disabled = true;
   requestPreview.innerHTML = "";
   responsePreview.innerHTML = "";
@@ -71,24 +78,21 @@ talk.onclick = (event) => {
   recognition.start();
 };
 
-socketio.on("summary-response", function (data) {
-  responsePreview.innerHTML = data;
-  speech.text = data;
-  if (data) {
-    window.speechSynthesis.speak(speech);
-  }
-});
-
 // Getting response from server
-socketio.on("brief-response", function (data) {
-  if (!data) {
-    data = "an error occured";
+socketio.on("summary-response", function (data) {
+  if (
+    responsePreview.textContent != "Timeout" &&
+    responsePreview.textContent != ""
+  ) {
     responsePreview.innerHTML = data;
+    speech.text = data;
+    window.speechSynthesis.speak(speech);
   }
 });
 
 //handeling the speech synthesis
 
+//on voice select
 window.speechSynthesis.onvoiceschanged = () => {
   voices = window.speechSynthesis.getVoices();
   speech.voice = voices[0];
@@ -140,11 +144,34 @@ document.querySelector("#start").addEventListener("click", () => {
   window.speechSynthesis.speak(speech);
 });
 
+document.querySelector("#reset").addEventListener("click", () => {
+  //stop speak
+  window.speechSynthesis.cancel();
+
+  //reset voice
+  voices = window.speechSynthesis.getVoices();
+  speech.voice = voices[0];
+
+  let voiceSelect = document.querySelector("#voices");
+  voices.forEach(
+    (voice, i) => (voiceSelect.options[i] = new Option(voice.name, i))
+  );
+
+  //reset meters
+  document.querySelector("#pitch").value = 1;
+  document.querySelector("#pitch-label").innerHTML = 1;
+
+  document.querySelector("#volume").value = 1;
+  document.querySelector("#volume-label").innerHTML = 1;
+
+  document.querySelector("#rate").value = 1;
+  document.querySelector("#rate-label").innerHTML = 1;
+});
+
 //restart button click
 restart.onclick = () => {
   requestPreview.innerHTML = "Press Talk to start...";
   responsePreview.innerHTML = "";
   talk.disabled = false;
   window.speechSynthesis.cancel();
-  socketio.emit("stop", false);
 };
